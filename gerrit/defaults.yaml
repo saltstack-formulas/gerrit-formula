@@ -1,0 +1,16 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+
+gerrit:
+  base_directory: /opt/gerrit
+  site_directory: gerrit-site
+  user: gerrit2
+  group: gerrit2
+  
+  install:
+    base_url: https://gerrit-releases.storage.googleapis.com
+    version: 2.11.3
+
+  service:
+    name: gerrit
+

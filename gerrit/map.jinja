@@ -1,0 +1,12 @@
+# -*- coding: utf-8 -*-
+# vim: ft=jinja
+
+{## Start with defaults from defaults.yaml ##}
+{% import_yaml "gerrit/defaults.yaml" as default_settings %}
+
+{# Update settings defaults from pillar data #}
+{% set gerrit_settings = salt['pillar.get'](
+    'gerrit',
+    default=default_settings.gerrit,
+    merge=True)
+%}
