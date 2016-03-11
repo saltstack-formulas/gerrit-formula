@@ -5,7 +5,7 @@
 {% import_yaml "gerrit/defaults.yaml" as default_settings %}
 
 {# Update settings defaults from pillar data #}
-{% set gerrit_settings = salt['pillar.get'](
+{% set settings = salt['pillar.get'](
     'gerrit',
     default=default_settings.gerrit,
     merge=True)

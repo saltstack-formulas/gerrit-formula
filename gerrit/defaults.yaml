@@ -3,14 +3,12 @@
 
 gerrit:
   base_directory: /opt/gerrit
-  site_directory: gerrit-site
-  user: gerrit2
-  group: gerrit2
-  
-  install:
+  site_directory: review
+  package:
+    version: 2.12.1
     base_url: https://gerrit-releases.storage.googleapis.com
-    version: 2.11.3
-
-  service:
-    name: gerrit
-
+  user: gerrit
+  group: gerrit
+  config:
+    canonical_web_url: http://localhost:8080
+  service: gerrit-server

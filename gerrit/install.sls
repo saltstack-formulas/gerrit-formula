@@ -1,61 +1,84 @@
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 
-{% from "gerrit/map.jinja" import gerrit_settings with context -%}
+{% from "gerrit/map.jinja" import settings with context -%}
+{% set war_file = "gerrit-" + settings.package.version + ".war" -%}
 
-{% set gerrit_war_file = "gerrit-" + gerrit_settings.install.version + ".war" -%}
+default-jre:
+  pkg.installed
 
-java-installation:
-  pkg.installed:
-    - name: openjdk-7-jre
+git:
+  pkg.installed
 
-git-installation:
-  pkg.installed:
-    - name: git
-
-gerrit-user:
+user_{{ settings.user }}:
   user.present:
-    - name: {{ gerrit_settings.user }}
+    - name: {{ settings.user }}
 
-gerrit-directory:
+group_{{ settings.group }}:
+  group.present:
+    - name: {{ settings.group }}
+
+{{ settings.base_directory }}/{{ settings.site_directory }}/etc:
   file.directory:
-    - name: {{ gerrit_settings.base_directory }}/{{ gerrit_settings.site_directory }}
-    - user: {{ gerrit_settings.user }}
-    - group: {{ gerrit_settings.group }}
-    - makedirs: True
+    - user: {{ settings.user }}
+    - group: {{ settings.group }}
+    - makedirs: true
 
-gerrit-download:
+{{ settings.base_directory }}/{{ settings.site_directory }}/plugins:
+  file.directory:
+    - user: {{ settings.user }}
+    - group: {{ settings.group }}
+    - makedirs: true
+
+gerrit_war:
   cmd.run:
-    - name: curl -O -s {{ gerrit_settings.install.base_url }}/{{ gerrit_war_file }}
-    - user: {{ gerrit_settings.user }}
-    - group: {{ gerrit_settings.group }}
-    - cwd: {{ gerrit_settings.base_directory }}
-    - unless: test -f {{ gerrit_settings.base_directory }}/{{ gerrit_war_file }}
+    - name: wget -qO {{ settings.base_directory }}/{{ settings.war_file }} {{ settings.base_url }}/{{ settings.war_file }}
+    - cwd: {{ settings.base_directory }}
+    - user: {{ settings.user }}
+    - group: {{ settings.group }}
+    - unless: test -f {{ settings.base_directory }}/{{ settings.war_file }}
 
-gerrit-configfile:
+{{ settings.base_directory }}/{{ settings.site_directory }}/etc/gerrit.config:
   file.managed:
-    - name: /etc/default/gerritcodereview
-    - source: salt://gerrit/files/gerritcodereview.jinja
+    - source: salt://gerrit/files/gerrit.config
+    - template: jinja
+    - user: {{ settings.user }}
+    - group: {{ settings.group }}
+    - mode: 0755
+    - makedirs: true
+
+{{ settings.base_directory }}/{{ settings.site_directory }}/etc/secure.config:
+  file.managed:
+    - source: salt://gerrit/files/secure.config
+    - template: jinja
+    - user: {{ settings.user }}
+    - group: {{ settings.group }}
+    - makedirs: true
+
+/etc/default/gerritcodereview:
+  file.managed:
+    - contents: GERRIT_SITE={{ settings.base_directory }}/{{ settings.site_directory }}
     - user: root
     - group: root
     - mode: 0755
-    - template: jinja
 
-gerrit-initfile:
+gerrit_init:
+  cmd.run:
+    - name: |
+        java -jar {{ settings.base_directory }}/{{ settings.war_file }} init --batch -d {{ settings.base_directory }}/{{ settings.site_directory }}
+        java -jar {{ settings.base_directory }}/{{ settings.war_file }} reindex -d {{ settings.base_directory }}/{{ settings.site_directory }}
+    - user: {{ settings.user }}
+    - group: {{ settings.group }}
+    - cwd: {{ settings.base_directory }}
+    - unless: test -d {{ settings.base_directory }}/{{ settings.site_directory }}/bin
+
+gerrit_init_script:
   file.symlink:
-    - name: /etc/init.d/{{ gerrit_settings.service.name }}
-    - target: {{ gerrit_settings.base_directory }}/{{ gerrit_settings.site_directory }}/bin/gerrit.sh
+    - name: /etc/init.d/{{ settings.service }}
+    - target: {{ settings.base_directory }}/{{ settings.site_directory }}/bin/gerrit.sh
     - user: root
     - group: root
 
-gerrit-init:
-  cmd.run:
-    - name: java -jar {{ gerrit_war_file }} init --batch -d {{ gerrit_settings.base_directory }}/{{ gerrit_settings.site_directory }}
-    - user: {{ gerrit_settings.user }}
-    - group: {{ gerrit_settings.group }}
-    - cwd: {{ gerrit_settings.base_directory }}
-    - unless: test -d {{ gerrit_settings.base_directory }}/{{ gerrit_settings.site_directory }}/bin
-
-gerrit-service:
+{{ settings.service }}:
   service.running:
-    - name: {{ gerrit_settings.service.name }}
+    - enable: true
