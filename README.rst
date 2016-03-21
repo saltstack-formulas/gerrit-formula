@@ -20,8 +20,10 @@ Available states
 Install gerrit and start up the gerrit service.
 
 Currently tested under:
-- Debian 8.3 Jessie
-- Ubuntu 14.04 LTS
+
+* Debian 8.3 Jessie
+* Ubuntu 14.04 LTS
+* CentOS 7
 
 For a list of all available options, look at: `gerrit/defaults.yaml` - also have a look at the pillar.example and map.jinja.
 
