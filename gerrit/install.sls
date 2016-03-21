@@ -2,13 +2,15 @@
 # vim: ft=yaml
 
 {% from "gerrit/map.jinja" import settings with context -%}
-{% set war_file = "gerrit-" + settings.package.version + ".war" -%}
+{% set gerrit_war_file = "gerrit-" ~ settings.package.version ~ ".war" -%}
 
-default-jre:
-  pkg.installed
+install_jre:
+  pkg.installed:
+    - name: {{ settings.jre }}
 
-git:
-  pkg.installed
+install_git:
+  pkg.installed:
+    - name: git
 
 user_{{ settings.user }}:
   user.present:
@@ -32,11 +34,11 @@ group_{{ settings.group }}:
 
 gerrit_war:
   cmd.run:
-    - name: wget -qO {{ settings.base_directory }}/{{ settings.war_file }} {{ settings.base_url }}/{{ settings.war_file }}
+    - name: wget -qO {{ settings.base_directory }}/{{ gerrit_war_file }} {{ settings.package.base_url }}/{{ gerrit_war_file }}
     - cwd: {{ settings.base_directory }}
     - user: {{ settings.user }}
     - group: {{ settings.group }}
-    - unless: test -f {{ settings.base_directory }}/{{ settings.war_file }}
+    - unless: test -f {{ settings.base_directory }}/{{ gerrit_war_file }}
 
 {{ settings.base_directory }}/{{ settings.site_directory }}/etc/gerrit.config:
   file.managed:
@@ -65,8 +67,8 @@ gerrit_war:
 gerrit_init:
   cmd.run:
     - name: |
-        java -jar {{ settings.base_directory }}/{{ settings.war_file }} init --batch -d {{ settings.base_directory }}/{{ settings.site_directory }}
-        java -jar {{ settings.base_directory }}/{{ settings.war_file }} reindex -d {{ settings.base_directory }}/{{ settings.site_directory }}
+        java -jar {{ settings.base_directory }}/{{ gerrit_war_file }} init --batch -d {{ settings.base_directory }}/{{ settings.site_directory }}
+        java -jar {{ settings.base_directory }}/{{ gerrit_war_file }} reindex -d {{ settings.base_directory }}/{{ settings.site_directory }}
     - user: {{ settings.user }}
     - group: {{ settings.group }}
     - cwd: {{ settings.base_directory }}
@@ -82,3 +84,5 @@ gerrit_init_script:
 {{ settings.service }}:
   service.running:
     - enable: true
+    - watch:
+      - file: {{ settings.base_directory }}/{{ settings.site_directory }}/etc/gerrit.config
