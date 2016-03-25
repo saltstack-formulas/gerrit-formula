@@ -11,4 +11,10 @@ gerrit:
   group: gerrit
   config:
     canonical_web_url: http://localhost:8080
+    database:
+      type: h2
+      dbname: reviewdb
+      hostname: localhost
+      username: gerrit
+      password: gerrit
   service: gerrit-server
