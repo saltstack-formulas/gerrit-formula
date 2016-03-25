@@ -1,0 +1,9 @@
+gerrit:
+    database:
+      # Supports h2 and other database types, but h2 and mysql are well tested ONLY
+      type: h2
+      # Before starting using mysql, database and user with correct rights should be created
+      dbname: reviewdb
+      hostname: localhost
+      username: gerrit
+      password: gerrit
