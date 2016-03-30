@@ -74,6 +74,13 @@ gerrit_init:
     - cwd: {{ settings.base_directory }}
     - unless: test -d {{ settings.base_directory }}/{{ settings.site_directory }}/bin
 
+link_logs_to_var_log_gerrit:
+  file.symlink:
+    - name: /var/log/gerrit
+    - target: {{ settings.base_directory }}/{{ settings.site_directory }}/logs
+    - user: root
+    - group: root
+
 gerrit_init_script:
   file.symlink:
     - name: /etc/init.d/{{ settings.service }}
