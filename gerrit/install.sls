@@ -91,7 +91,13 @@ gerrit_war:
 gerrit_init:
   cmd.run:
     - name: |
+{% if settings.core_plugins is not none %}
+    {% for plugin in settings.core_plugins %}
+        java -jar {{ settings.base_directory }}/{{ gerrit_war_file }} init --batch --install-plugin {{ plugin }} -d {{ settings.base_directory }}/{{ settings.site_directory }}
+    {% endfor %}
+{% else %}
         java -jar {{ settings.base_directory }}/{{ gerrit_war_file }} init --batch -d {{ settings.base_directory }}/{{ settings.site_directory }}
+{% endif %}
         java -jar {{ settings.base_directory }}/{{ gerrit_war_file }} reindex -d {{ settings.base_directory }}/{{ settings.site_directory }}
     - user: {{ settings.user }}
     - group: {{ settings.group }}
