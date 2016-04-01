@@ -26,11 +26,35 @@ group_{{ settings.group }}:
     - group: {{ settings.group }}
     - makedirs: true
 
+{{ settings.base_directory }}/{{ settings.site_directory }}/lib:
+  file.directory:
+    - user: {{ settings.user }}
+    - group: {{ settings.group }}
+    - makedirs: true
+
+{% for name, library in salt['pillar.get']('gerrit:libraries', {}).items() %}
+{{ install_dir }}/{{ site_dir }}/lib/{{ name }}.jar:
+  file.managed:
+    - source: {{ library.source }}
+    - source_hash: {{ library.source_hash }}
+    - user: {{ user }}
+    - group: {{ group }}
+{% endfor %}
+
 {{ settings.base_directory }}/{{ settings.site_directory }}/plugins:
   file.directory:
     - user: {{ settings.user }}
     - group: {{ settings.group }}
     - makedirs: true
+
+{% for name, plugin in salt['pillar.get']('gerrit:plugins', {}).items() %}
+{{ install_dir }}/{{ site_dir }}/plugins/{{ name }}.jar:
+  file.managed:
+    - source: {{ plugin.source }}
+    - source_hash: {{ plugin.source_hash }}
+    - user: {{ user }}
+    - group: {{ group }}
+{% endfor %}
 
 gerrit_war:
   cmd.run:
