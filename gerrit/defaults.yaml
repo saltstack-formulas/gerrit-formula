@@ -11,6 +11,8 @@ gerrit:
   group: gerrit
   config:
     canonical_web_url: http://localhost:8080
+    auth:
+      type: OpenID
     database:
       type: h2
       dbname: reviewdb

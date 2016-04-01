@@ -1,5 +1,11 @@
 gerrit:
   config:
+    # Configure auth section
+    # For example to configure type, httpHeader and logoutUrl put below pillars
+    auth:
+      type: oauth
+      httpHeader: GITHUB_USER
+      logoutUrl: /
     database:
       # Supports h2 and other database types, but h2 and mysql are well tested ONLY
       type: h2
@@ -8,16 +14,16 @@ gerrit:
       hostname: localhost
       username: gerrit
       password: gerrit
-    libraries:
-      github-oauth:
-        source: https://gerrit-ci.gerritforge.com/view/Plugins-stable-2.12/job/plugin-github-mvn-stable-2.12/lastSuccessfulBuild/artifact/github-oauth/target/github-oauth-2.12-SNAPSHOT.jar
-        source_hash: md5=bb34533f320637f1fa8cb69004ef4a00
-    plugins:
-      github-plugin:
-        source: https://gerrit-ci.gerritforge.com/view/Plugins-stable-2.12/job/plugin-github-mvn-stable-2.12/3/artifact/github-plugin/target/github-plugin-2.12-SNAPSHOT.jar
-        source_hash: md5=42ebd7a68c6e0a35e7885c69b28c503b
   # Install core plugins https://gerrit-review.googlesource.com/Documentation/config-plugins.html#core-plugins
   # For example to install such core plugins as replication and download-commands
   core_plugins:
     - replication
     - download-commands
+  libraries:
+    github-oauth:
+      source: https://gerrit-ci.gerritforge.com/view/Plugins-stable-2.12/job/plugin-github-mvn-stable-2.12/lastSuccessfulBuild/artifact/github-oauth/target/github-oauth-2.12-SNAPSHOT.jar
+      source_hash: md5=bb34533f320637f1fa8cb69004ef4a00
+  plugins:
+    github-plugin:
+      source: https://gerrit-ci.gerritforge.com/view/Plugins-stable-2.12/job/plugin-github-mvn-stable-2.12/3/artifact/github-plugin/target/github-plugin-2.12-SNAPSHOT.jar
+      source_hash: md5=42ebd7a68c6e0a35e7885c69b28c503b
