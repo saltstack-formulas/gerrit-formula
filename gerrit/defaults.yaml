@@ -17,4 +17,5 @@ gerrit:
       hostname: localhost
       username: gerrit
       password: gerrit
+  core_plugins:
   service: gerrit-server
