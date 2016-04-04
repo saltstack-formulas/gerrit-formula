@@ -1,11 +1,17 @@
 gerrit:
   config:
-    # Configure auth section
+    # Configure auth section https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#auth
     # For example to configure type, httpHeader and logoutUrl put below pillars
     auth:
       type: oauth
       httpHeader: GITHUB_USER
       logoutUrl: /
+    # Configure gerrit section https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#gerrit
+    # For example to configure canonicalWebUrl and canonicalGitUrl just put below pillars
+    gerrit:
+      canonicalWebUrl: http://example.com/
+      canonicalGitUrl: git://example.com/
+    # Configure database section https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#database
     database:
       # Supports h2 and other database types, but h2 and mysql are well tested ONLY
       type: h2

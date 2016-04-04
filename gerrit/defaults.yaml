@@ -10,7 +10,9 @@ gerrit:
   user: gerrit
   group: gerrit
   config:
-    canonical_web_url: http://localhost:8080
+    gerrit:
+      canonicalWebUrl: http://localhost:8080/
+      basePath: git
     auth:
       type: OpenID
     database:
