@@ -20,6 +20,14 @@ gerrit:
       hostname: localhost
       username: gerrit
       password: gerrit
+  # Configure custom config sections in gerrit.config
+  # Below example shows how to configure github-plugin section
+  config_custom_sections:
+    github:
+        url: https://github.com
+        apiUrl: https://api.github.com
+        clientId: 12343e611234c6ab4321
+        clientSecret: 123475f1d4da1234f1658b123432d5dfa27a4321
   # Install core plugins https://gerrit-review.googlesource.com/Documentation/config-plugins.html#core-plugins
   # For example to install such core plugins as replication and download-commands
   core_plugins:

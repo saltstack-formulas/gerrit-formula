@@ -21,5 +21,6 @@ gerrit:
       hostname: localhost
       username: gerrit
       password: gerrit
+  config_custom_sections:
   core_plugins:
   service: gerrit-server
