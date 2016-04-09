@@ -21,6 +21,10 @@ gerrit:
       hostname: localhost
       username: gerrit
       password: gerrit
+    sshd:
+      listenAddress: '*:29418'
+    httpd:
+      listenUrl: http://*:8080/
   config_custom_sections:
   core_plugins:
   service: gerrit-server
