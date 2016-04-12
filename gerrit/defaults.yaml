@@ -25,6 +25,8 @@ gerrit:
       listenAddress: '*:29418'
     httpd:
       listenUrl: http://*:8080/
+    sendemail:
+      smtpServer: localhost
   config_custom_sections:
   core_plugins:
   service: gerrit-server
