@@ -12,44 +12,49 @@ install_git:
   pkg.installed:
     - name: git
 
-user_{{ settings.user }}:
+gerrit_user:
   user.present:
     - name: {{ settings.user }}
 
-group_{{ settings.group }}:
+gerrit_group:
   group.present:
     - name: {{ settings.group }}
 
-{{ settings.base_directory }}/{{ settings.site_directory }}/etc:
+create_etc_dir:
   file.directory:
+    - name: {{ settings.base_directory }}/{{ settings.site_directory }}/etc
     - user: {{ settings.user }}
     - group: {{ settings.group }}
     - makedirs: true
 
-{{ settings.base_directory }}/{{ settings.site_directory }}/lib:
+create_lib_dir:
   file.directory:
+    - name: {{ settings.base_directory }}/{{ settings.site_directory }}/lib
     - user: {{ settings.user }}
     - group: {{ settings.group }}
     - makedirs: true
 
 {% for name, library in salt['pillar.get']('gerrit:libraries', {}).items() %}
-{{ install_dir }}/{{ site_dir }}/lib/{{ name }}.jar:
+install_{{ name }}_lib:
   file.managed:
+    - name: {{ install_dir }}/{{ site_dir }}/lib/{{ name }}.jar
     - source: {{ library.source }}
     - source_hash: {{ library.source_hash }}
     - user: {{ user }}
     - group: {{ group }}
 {% endfor %}
 
-{{ settings.base_directory }}/{{ settings.site_directory }}/plugins:
+create_plugins_dir:
   file.directory:
+    - name: {{ settings.base_directory }}/{{ settings.site_directory }}/plugins
     - user: {{ settings.user }}
     - group: {{ settings.group }}
     - makedirs: true
 
 {% for name, plugin in salt['pillar.get']('gerrit:plugins', {}).items() %}
-{{ install_dir }}/{{ site_dir }}/plugins/{{ name }}.jar:
+install_{{ name }}_plugin:
   file.managed:
+    - name: {{ install_dir }}/{{ site_dir }}/plugins/{{ name }}.jar
     - source: {{ plugin.source }}
     - source_hash: {{ plugin.source_hash }}
     - user: {{ user }}
@@ -64,17 +69,22 @@ gerrit_war:
     - group: {{ settings.group }}
     - unless: test -f {{ settings.base_directory }}/{{ gerrit_war_file }}
 
-{{ settings.base_directory }}/{{ settings.site_directory }}/etc/gerrit.config:
+gerrit_config:
   file.managed:
+    - name: {{ settings.base_directory }}/{{ settings.site_directory }}/etc/gerrit.config
     - source: salt://gerrit/files/gerrit.config
     - template: jinja
     - user: {{ settings.user }}
     - group: {{ settings.group }}
     - mode: 0755
     - makedirs: true
+    - defaults:
+        settings: {{ settings|json }}
+        war_file: {{ gerrit_war_file }}
 
-{{ settings.base_directory }}/{{ settings.site_directory }}/etc/secure.config:
+secure_config:
   file.managed:
+    - name: {{ settings.base_directory }}/{{ settings.site_directory }}/etc/secure.config
     - source: salt://gerrit/files/secure.config
     - template: jinja
     - user: {{ settings.user }}
@@ -91,13 +101,13 @@ gerrit_war:
 gerrit_init:
   cmd.run:
     - name: |
-{% if settings.core_plugins is not none %}
+{%- if settings.core_plugins is not none %}
     {% for plugin in settings.core_plugins %}
         java -jar {{ settings.base_directory }}/{{ gerrit_war_file }} init --batch --install-plugin {{ plugin }} -d {{ settings.base_directory }}/{{ settings.site_directory }}
-    {% endfor %}
-{% else %}
+    {%- endfor %}
+{%- else %}
         java -jar {{ settings.base_directory }}/{{ gerrit_war_file }} init --batch -d {{ settings.base_directory }}/{{ settings.site_directory }}
-{% endif %}
+{%- endif %}
         java -jar {{ settings.base_directory }}/{{ gerrit_war_file }} reindex -d {{ settings.base_directory }}/{{ settings.site_directory }}
     - user: {{ settings.user }}
     - group: {{ settings.group }}
@@ -118,8 +128,9 @@ gerrit_init_script:
     - user: root
     - group: root
 
-{{ settings.service }}:
+gerrit_service:
   service.running:
+    - name: {{ settings.service }}
     - enable: true
     - watch:
-      - file: {{ settings.base_directory }}/{{ settings.site_directory }}/etc/gerrit.config
+      - file: gerrit_config
