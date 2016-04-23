@@ -27,6 +27,9 @@ gerrit:
       listenUrl: http://*:8080/
     sendemail:
       smtpServer: localhost
+    index:
+      type: LUCENE
+      onlineUpgrade: true
   config_custom_sections:
   core_plugins:
   service: gerrit-server
