@@ -40,6 +40,11 @@ gerrit:
       smtpEncryption: SSL
       smtpUser: myuser@google.com
       smtpPass: mypass
+    # Configure the index section https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#index
+    index:
+      # Below example shows how to configure different thread options
+      threads: 5
+      batchThreads: 4
   # Configure custom config sections in gerrit.config
   # Below example shows how to configure github-plugin section
   config_custom_sections:
