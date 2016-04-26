@@ -9,6 +9,7 @@ gerrit:
     base_url: https://gerrit-releases.storage.googleapis.com
   user: gerrit
   group: gerrit
+  secondary_index: True
   config:
     gerrit:
       canonicalWebUrl: http://localhost:8080/
