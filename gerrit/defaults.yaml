@@ -22,6 +22,8 @@ gerrit:
       hostname: localhost
       username: gerrit
       password: gerrit
+    receive:
+      enableSignedPush: 'false'
     sshd:
       listenAddress: '*:29418'
     httpd:
