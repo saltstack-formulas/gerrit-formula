@@ -33,6 +33,8 @@ gerrit:
     index:
       type: LUCENE
       onlineUpgrade: true
+  secure:
+    auth:
   config_custom_sections:
   core_plugins:
   service: gerrit-server

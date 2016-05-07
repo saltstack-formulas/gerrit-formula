@@ -90,6 +90,8 @@ secure_config:
     - user: {{ settings.user }}
     - group: {{ settings.group }}
     - makedirs: true
+    - defaults:
+        secure: {{ settings.secure|json }}
 
 /etc/default/gerritcodereview:
   file.managed:

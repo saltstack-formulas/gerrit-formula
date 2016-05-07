@@ -49,6 +49,15 @@ gerrit:
     receive:
       # Configure number of threads to perform change creation or patch set updates concurrently
       changeUpdateThreads: 5
+  # Format secure.conf file content https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#secure.config
+  secure:
+    auth:
+      registerEmailPrivateKey: AMahuFyehfwr5mTldZNfBg9LsnRIDvfc8yn/DQ08jAA0Y7VV
+    database:
+      username: webuser
+      password: s3kr3t
+    ldap
+      password: l3tm3srch
   # Configure custom config sections in gerrit.config
   # Below example shows how to configure github-plugin section
   config_custom_sections:
