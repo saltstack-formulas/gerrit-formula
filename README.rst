@@ -17,13 +17,12 @@ Available states
 ``gerrit``
 ----------
 
-Install gerrit and start up the gerrit service.
+Install and configure gerrit.
 
-Currently tested under:
+``gerrit.service``
+----------
 
-* Debian 8.3 Jessie
-* Ubuntu 14.04 LTS
-* CentOS 7
+Start up gerrit service.
 
 For a list of all available options, look at: `gerrit/defaults.yaml` - also have a look at the pillar.example and map.jinja.
 
@@ -43,6 +42,13 @@ Structure example:
    secure:
      auth:
        registerEmailPrivateKey: 'generate me by "openssl rand -base64 36"'
+
+Currently tested under:
+=======================
+
+* Debian 8.3 Jessie
+* Ubuntu 14.04 LTS
+* CentOS 7
 
 Testing
 =======
