@@ -26,19 +26,21 @@ Start up gerrit service.
 
 For a list of all available options, look at: `gerrit/defaults.yaml` - also have a look at the pillar.example and map.jinja.
 
-Obligatory pillar
+Mandatory pillars
 =================
 
-Pillar **registerEmailPrivateKey** is mandatory because if you do not generate it gerrit init will generate it
-for you but then saltstack will remove it from config file during next run.
-
-The one of the ways to do it use command **openssl rand -base64 36**
+Pillars **serverId** and **registerEmailPrivateKey** are mandatory,
+because if unset, ``gerrit init`` will generate them
+for you, but then SaltStack will remove them from the config file during the next run.
 
 Structure example:
 
 .. code:: yaml
 
  gerrit:
+   config:
+     gerrit:
+       serverId: myUniqueServerId
    secure:
      auth:
        registerEmailPrivateKey: 'generate me by "openssl rand -base64 36"'

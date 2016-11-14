@@ -5,7 +5,7 @@ gerrit:
   base_directory: /opt/gerrit
   site_directory: review
   package:
-    version: 2.12.1
+    version: 2.13.2
     base_url: https://gerrit-releases.storage.googleapis.com
   user: gerrit
   group: gerrit
