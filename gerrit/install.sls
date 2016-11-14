@@ -37,11 +37,13 @@ create_lib_dir:
 {% for name, library in salt['pillar.get']('gerrit:libraries', {}).items() %}
 install_{{ name }}_lib:
   file.managed:
-    - name: {{ install_dir }}/{{ site_dir }}/lib/{{ name }}.jar
+    - name: {{ settings.base_directory }}/{{ settings.site_directory }}/lib/{{ name }}.jar
     - source: {{ library.source }}
+{% if library.source_hash is defined %}
     - source_hash: {{ library.source_hash }}
-    - user: {{ user }}
-    - group: {{ group }}
+{% endif %}
+    - user: {{ settings.user }}
+    - group: {{ settings.group }}
 {% endfor %}
 
 create_plugins_dir:
@@ -54,11 +56,13 @@ create_plugins_dir:
 {% for name, plugin in salt['pillar.get']('gerrit:plugins', {}).items() %}
 install_{{ name }}_plugin:
   file.managed:
-    - name: {{ install_dir }}/{{ site_dir }}/plugins/{{ name }}.jar
+    - name: {{ settings.base_directory }}/{{ settings.site_directory }}/plugins/{{ name }}.jar
     - source: {{ plugin.source }}
+{% if plugin.source_hash is defined %}
     - source_hash: {{ plugin.source_hash }}
-    - user: {{ user }}
-    - group: {{ group }}
+{% endif %}
+    - user: {{ settings.user }}
+    - group: {{ settings.group }}
 {% endfor %}
 
 gerrit_war:
@@ -76,7 +80,6 @@ gerrit_config:
     - template: jinja
     - user: {{ settings.user }}
     - group: {{ settings.group }}
-    - mode: 0755
     - makedirs: true
     - defaults:
         settings: {{ settings|json }}
