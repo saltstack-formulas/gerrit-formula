@@ -16,6 +16,12 @@ that differ from whats in defaults.yaml
       'jre': 'java-1.8.0-openjdk',
     },
     'Arch': {},
+    'FreeBSD': {
+      'base_directory': '/usr/local/gerrit',
+      'jre': 'openjdk8-jre',
+      'java_home': '/usr/local/openjdk8-jre',
+      'service': 'gerrit',
+    },
   }, grain='os_family', merge=salt['pillar.get']('gerrit:lookup'))
 %}
 

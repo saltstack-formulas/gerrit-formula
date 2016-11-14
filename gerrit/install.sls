@@ -66,12 +66,12 @@ install_{{ name }}_plugin:
 {% endfor %}
 
 gerrit_war:
-  cmd.run:
-    - name: wget -qO {{ settings.base_directory }}/{{ gerrit_war_file }} {{ settings.package.base_url }}/{{ gerrit_war_file }}
-    - cwd: {{ settings.base_directory }}
+  file.managed:
+    - name: {{ settings.base_directory }}/{{ gerrit_war_file }}
     - user: {{ settings.user }}
     - group: {{ settings.group }}
-    - unless: test -f {{ settings.base_directory }}/{{ gerrit_war_file }}
+    - source: {{ settings.package.base_url }}/{{ gerrit_war_file }}
+    - skip_verify: true
 
 gerrit_config:
   file.managed:
@@ -96,12 +96,17 @@ secure_config:
     - defaults:
         secure: {{ settings.secure|json }}
 
+{# On FreeBSD setting the site path is handled by the rc.d script,
+   which allows us to skip writing to /etc
+   (which shouldn't be used for installed applications). #}
+{% if grains.os_family != 'FreeBSD' %}
 /etc/default/gerritcodereview:
   file.managed:
     - contents: GERRIT_SITE={{ settings.base_directory }}/{{ settings.site_directory }}
     - user: root
     - group: root
     - mode: 0755
+{% endif %}
 
 gerrit_init:
   cmd.run:
@@ -133,12 +138,22 @@ link_logs_to_var_log_gerrit:
   file.symlink:
     - name: /var/log/gerrit
     - target: {{ settings.base_directory }}/{{ settings.site_directory }}/logs
-    - user: root
-    - group: root
 
 gerrit_init_script:
+{% if grains.os_family == 'FreeBSD' %}
+  file.managed:
+    - name: /usr/local/etc/rc.d/{{ settings.service }}
+    - source: salt://gerrit/files/freebsd-rc.sh
+    - template: jinja
+    - mode: 755
+    - defaults:
+        service_name: {{ settings.service }}
+        directory: {{ settings.base_directory }}/{{ settings.site_directory }}
+        user: {{ settings.user }}
+{% else %}
   file.symlink:
     - name: /etc/init.d/{{ settings.service }}
     - target: {{ settings.base_directory }}/{{ settings.site_directory }}/bin/gerrit.sh
     - user: root
     - group: root
+{% endif %}
