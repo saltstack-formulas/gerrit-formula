@@ -9,6 +9,7 @@ gerrit:
     # Configure gerrit section https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#gerrit
     # For example to configure canonicalWebUrl and canonicalGitUrl just put below pillars
     gerrit:
+      serverId: myServerId
       canonicalWebUrl: http://example.com/
       canonicalGitUrl: git://example.com/
     # Configure database section https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#database
