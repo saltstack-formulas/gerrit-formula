@@ -150,6 +150,16 @@ gerrit_init_script:
         service_name: {{ settings.service }}
         directory: {{ settings.base_directory }}/{{ settings.site_directory }}
         user: {{ settings.user }}
+{% elif grains.init == "systemd" %}
+  file.managed:
+    - name: /etc/systemd/system/{{ settings.service }}.service
+    - source: salt://gerrit/files/gerrit.service
+    - template: jinja
+    - mode: 0644
+    - defaults:
+        service_name: {{ settings.service }}
+        directory: {{ settings.base_directory }}/{{ settings.site_directory }}
+        user: {{ settings.user }}
 {% else %}
   file.symlink:
     - name: /etc/init.d/{{ settings.service }}
